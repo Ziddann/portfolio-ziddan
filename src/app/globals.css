@@ -1,0 +1,518 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #191c18;
+  --ink-2: #242822;
+  --ink-3: #33382f;
+  --paper: #f2e7d2;
+  --paper-light: #fbf5e7;
+  --paper-mid: #e8dabf;
+  --paper-deep: #dccbab;
+  --rust: #c1542d;
+  --rust-dark: #9a3b1f;
+  --gold: #e3a23b;
+  --gold-light: #f6e2b8;
+  --teal: #2d7770;
+  --teal-dark: #1e5a55;
+  --moss: #7d9a5a;
+  --rose: #b44a4a;
+  --muted: #5a5a4c;
+  --nav-h: 76px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  background-color: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+section[id] {
+  scroll-margin-top: 0;
+}
+
+::selection {
+  background-color: var(--rust);
+  color: var(--paper-light);
+}
+
+:focus-visible {
+  outline: 3px solid var(--rust);
+  outline-offset: 3px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink) var(--paper-mid);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper-mid);
+  border-left: 2px solid var(--ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink);
+  border: 2px solid var(--paper-mid);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rust);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------
+   Pixel surfaces
+   --------------------------------------------------------------- */
+
+.pixel-panel {
+  position: relative;
+  background-color: var(--paper-light);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+.pixel-panel-dark {
+  position: relative;
+  background-color: var(--ink-2);
+  color: var(--paper);
+  border: 2px solid var(--paper);
+  box-shadow: 6px 6px 0 0 var(--rust);
+}
+
+.pixel-panel-rust {
+  position: relative;
+  background-color: var(--rust);
+  color: var(--paper-light);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+.pixel-inset {
+  background-color: var(--paper-light);
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 0 rgba(25, 28, 24, 0.12);
+}
+
+.pixel-inset-dark {
+  background-color: rgba(25, 28, 24, 0.55);
+  border: 2px solid rgba(242, 231, 210, 0.35);
+  box-shadow: inset 2px 2px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Four decorative corner blocks for HUD panels */
+.pixel-corners::before,
+.pixel-corners::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  pointer-events: none;
+}
+
+.pixel-corners::before {
+  top: 6px;
+  left: 6px;
+  box-shadow: calc(100% + 0px) 0 0 var(--gold);
+}
+
+.pixel-corners::after {
+  right: 6px;
+  bottom: 6px;
+  box-shadow: 0 calc(-100% + 0px) 0 var(--gold);
+}
+
+/* ---------------------------------------------------------------
+   Buttons & controls
+   --------------------------------------------------------------- */
+
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid var(--ink);
+  background-color: var(--paper-light);
+  color: var(--ink);
+  padding: 0.7rem 1.05rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  box-shadow: 4px 4px 0 0 var(--ink);
+  transition:
+    transform 120ms steps(2, end),
+    box-shadow 120ms steps(2, end),
+    background-color 120ms linear,
+    color 120ms linear;
+}
+
+.pixel-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0 0 var(--ink);
+  background-color: var(--gold-light);
+}
+
+.pixel-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 var(--ink);
+}
+
+.pixel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pixel-btn-primary {
+  background-color: var(--rust);
+  color: var(--paper-light);
+}
+
+.pixel-btn-primary:hover {
+  background-color: var(--rust-dark);
+  color: var(--paper-light);
+}
+
+.pixel-btn-dark {
+  background-color: var(--ink);
+  color: var(--paper-light);
+  border-color: var(--paper);
+  box-shadow: 4px 4px 0 0 var(--rust);
+}
+
+.pixel-btn-dark:hover {
+  background-color: var(--ink-3);
+  box-shadow: 6px 6px 0 0 var(--gold);
+}
+
+.pixel-btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pixel-btn-ghost:hover {
+  border-color: var(--ink);
+  background: var(--paper-light);
+  box-shadow: 3px 3px 0 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+.pixel-btn-sm {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.65rem;
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+
+.pixel-btn-sm:hover {
+  box-shadow: 4px 4px 0 0 var(--ink);
+}
+
+/* ---------------------------------------------------------------
+   Labels, chips, fields
+   --------------------------------------------------------------- */
+
+.hud-label {
+  font-family: var(--font-pixel), monospace;
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hud-label-sm {
+  font-family: var(--font-pixel), monospace;
+  font-size: 8px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pixel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1.5px solid var(--ink);
+  background-color: var(--paper-light);
+  color: var(--ink);
+  padding: 0.2rem 0.4rem;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.95rem;
+  line-height: 1.1;
+  box-shadow: 2px 2px 0 0 rgba(25, 28, 24, 0.9);
+  white-space: nowrap;
+}
+
+.pixel-chip-dark {
+  border-color: var(--paper);
+  background-color: var(--ink-3);
+  color: var(--paper);
+  box-shadow: 2px 2px 0 0 var(--rust);
+}
+
+.pixel-input {
+  width: 100%;
+  border: 2px solid var(--ink);
+  background-color: var(--paper-light);
+  color: var(--ink);
+  padding: 0.7rem 0.8rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  box-shadow: inset 2px 2px 0 0 rgba(25, 28, 24, 0.1);
+  transition:
+    background-color 120ms linear,
+    border-color 120ms linear,
+    box-shadow 120ms linear;
+}
+
+.pixel-input::placeholder {
+  color: #8a8776;
+}
+
+.pixel-input:hover {
+  background-color: #fffdf7;
+}
+
+.pixel-input:focus {
+  outline: none;
+  border-color: var(--rust);
+  box-shadow:
+    inset 2px 2px 0 0 rgba(25, 28, 24, 0.1),
+    0 0 0 3px rgba(193, 84, 45, 0.2);
+}
+
+.pixel-input-error {
+  border-color: var(--rose);
+}
+
+/* ---------------------------------------------------------------
+   Textures
+   --------------------------------------------------------------- */
+
+.scanlines {
+  position: relative;
+  isolation: isolate;
+}
+
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.32) 0px,
+    rgba(0, 0, 0, 0.32) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0.14;
+}
+
+.scanlines > * {
+  position: relative;
+  z-index: 2;
+}
+
+.pixel-dither {
+  height: 12px;
+  background-image: conic-gradient(
+    from 90deg at 2px 2px,
+    var(--ink) 90deg,
+    transparent 0
+  );
+  background-size: 4px 4px;
+  opacity: 0.85;
+}
+
+.pixel-dither-rust {
+  height: 12px;
+  background-image: conic-gradient(
+    from 90deg at 2px 2px,
+    var(--rust) 90deg,
+    transparent 0
+  );
+  background-size: 4px 4px;
+}
+
+.pixel-text-shadow {
+  text-shadow: 3px 3px 0 var(--ink);
+}
+
+.pixel-text-shadow-gold {
+  text-shadow: 3px 3px 0 var(--gold);
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveals (only when the inline motion flag is present)
+   --------------------------------------------------------------- */
+
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 500ms steps(8, end),
+    transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.js-motion [data-reveal="left"] {
+  transform: translate3d(-24px, 0, 0);
+}
+
+.js-motion [data-reveal="right"] {
+  transform: translate3d(24px, 0, 0);
+}
+
+.js-motion [data-reveal="scale"] {
+  transform: scale(0.965);
+}
+
+.js-motion [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* ---------------------------------------------------------------
+   Custom cursor
+   --------------------------------------------------------------- */
+
+html.pixel-cursor-active,
+html.pixel-cursor-active * {
+  cursor: none;
+}
+
+html.pixel-cursor-active input,
+html.pixel-cursor-active textarea,
+html.pixel-cursor-active select,
+html.pixel-cursor-active [contenteditable="true"] {
+  cursor: text;
+}
+
+.pixel-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate(-2px, -2px);
+  will-change: transform;
+}
+
+.pixel-cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js-motion [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .scanlines::after {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Small helpers
+   --------------------------------------------------------------- */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10000;
+  transform: translateY(-150%);
+  transition: transform 120ms steps(2, end);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}

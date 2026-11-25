@@ -1,0 +1,111 @@
+{
+  "name": "Portfolio Contact to WhatsApp Cloud API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio-contact",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "node-webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [200, 300],
+      "webhookId": "portfolio-contact-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Security Check: Verify Webhook Secret if set\nconst incomingSecret = $input.item.json.headers['x-webhook-secret'] || $input.item.json.headers['X-Webhook-Secret'];\nconst expectedSecret = $env.N8N_WEBHOOK_SECRET;\n\nif (expectedSecret && incomingSecret !== expectedSecret) {\n  throw new Error('Unauthorized: Invalid or missing X-Webhook-Secret header');\n}\n\n// 2. Extract Body Payload\nconst body = $input.item.json.body || $input.item.json;\nconst visitor = body.visitor || {};\nconst content = body.content || {};\nconst metadata = body.metadata || {};\n\nif (!visitor.name || !visitor.email || !content.message) {\n  throw new Error('Bad Request: Incomplete submission data');\n}\n\n// 3. Construct WhatsApp Message Payload\n// Supports standard Meta Cloud API freeform or pre-approved utility template\nconst recipientPhone = $env.OWNER_WHATSAPP_NUMBER || '6281234567890';\nconst formattedText = `*New Portfolio Contact*\\n\\n*Visitor:* ${visitor.name}\\n*Email:* ${visitor.email}\\n*Subject:* ${content.subject || 'Portfolio Inquiry'}\\n*Time:* ${metadata.submittedAtFormatted || new Date().toISOString()}\\n\\n*Message:*\\n${content.message}`;\n\nreturn {\n  recipientPhone,\n  visitor,\n  content,\n  metadata,\n  formattedText,\n  whatsAppPayload: {\n    messaging_product: 'whatsapp',\n    recipient_type: 'individual',\n    to: recipientPhone.replace(/\\D/g, ''),\n    type: 'text',\n    text: {\n      preview_url: false,\n      body: formattedText\n    }\n  }\n};"
+      },
+      "id": "node-process-data",
+      "name": "Process & Format Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{$env.WHATSAPP_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WHATSAPP_ACCESS_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.whatsAppPayload) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "node-whatsapp-api",
+      "name": "Meta WhatsApp Cloud API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'WhatsApp notification delivered successfully', messageId: $json.messages ? $json.messages[0].id : null }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "node-respond-success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [920, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Process & Format Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process & Format Message": {
+      "main": [
+        [
+          {
+            "node": "Meta WhatsApp Cloud API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta WhatsApp Cloud API": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
